@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req) {
@@ -5,15 +6,14 @@ export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   if (!token && pathname !== "/login") {
-    return Response.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Example RBAC enforcement
   if (pathname.startsWith("/admin") && token?.role !== "admin") {
-    return Response.redirect(new URL("/unauthorized", req.url));
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
-  return Response.next();
+  return NextResponse.next();
 }
 
 export const config = {

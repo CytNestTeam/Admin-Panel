@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -12,21 +13,31 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(formData),
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
     });
 
-    const data = await res.json();
-
     if (res.ok) {
-      router.push("/dashboard"); // Redirect to dashboard or user-specific page
+      // Fetch session to get user role
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+
+      const userRole = session?.user?.role || "";
+      if (userRole === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
-      setError(data.error || "Login failed.");
+      setError("Invalid email or password.");
     }
   };
 
@@ -53,7 +64,10 @@ export default function LoginPage() {
           onChange={handleChange}
           required
         />
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded"
+        >
           Login
         </button>
       </form>
