@@ -1,51 +1,61 @@
-'use client';
+// File: src/app/login/page.js
+"use client";
 
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
   const router = useRouter();
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(formData),
     });
 
-    if (result.ok) {
-      router.push('/dashboard');
+    const data = await res.json();
+
+    if (res.ok) {
+      router.push("/dashboard"); // Redirect to dashboard or user-specific page
     } else {
-      setError('Invalid credentials');
+      setError(data.error || "Login failed.");
     }
   };
 
   return (
-    <div className="login-form">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-md mx-auto p-6 bg-white rounded shadow mt-10">
+      <h2 className="text-xl font-bold mb-4">Login</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <p className="text-red-600">{error}</p>}
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
+          className="w-full border px-3 py-2 rounded"
+          value={formData.email}
+          onChange={handleChange}
           required
-          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
+          className="w-full border px-3 py-2 rounded"
+          value={formData.password}
+          onChange={handleChange}
           required
-          onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Login</button>
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
+          Login
+        </button>
       </form>
     </div>
   );

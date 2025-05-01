@@ -25,9 +25,19 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData(e.target);
+    const payload = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      roleId: parseInt(formData.get("roleId"), 10),
+    };
+
     const res = await fetch("/api/register", {
       method: "POST",
-      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
@@ -39,16 +49,15 @@ export default function RegisterPage() {
     }
   };
 
+
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
       <h2 className="text-xl font-bold mb-4">Register</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
+      <input
           name="email"
           type="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
           required
           className="w-full border p-2 rounded"
         />
@@ -56,15 +65,11 @@ export default function RegisterPage() {
           name="password"
           type="password"
           placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
           required
           className="w-full border p-2 rounded"
         />
         <select
           name="roleId"
-          value={formData.roleId}
-          onChange={handleChange}
           required
           className="w-full border p-2 rounded"
         >

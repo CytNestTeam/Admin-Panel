@@ -8,21 +8,21 @@ datasource db {
 }
 
 model role {
-  id        String   @id
+  id        Int       @id @default(autoincrement())
   name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   user      user[]
 }
 
 model user {
-  id        String   @id
-  email     String   @unique(map: "email")
+  id        Int       @id @default(autoincrement())
+  email     String    @unique(map: "email")
   password  String
-  roleId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  role      role     @relation(fields: [roleId], references: [id], map: "User_roleId_fkey")
+  roleId    Int       @default(2)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  role      role      @relation(fields: [roleId], references: [id], onUpdate: Restrict, map: "User_roleId_fkey")
 
-  @@index([roleId], map: "User_roleId_fkey")
+  @@index([roleId], map: "roleId")
 }
