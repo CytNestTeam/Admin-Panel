@@ -16,13 +16,15 @@ model role {
 }
 
 model user {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique(map: "email")
-  password  String
-  roleId    Int       @default(2)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  role      role      @relation(fields: [roleId], references: [id], onUpdate: Restrict, map: "User_roleId_fkey")
+  id               Int       @id @default(autoincrement())
+  email            String    @unique(map: "email")
+  password         String
+  roleId           Int       @default(2)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime?
+  resetToken       String?   @db.VarChar(255)
+  resetTokenExpiry DateTime? @db.DateTime(0)
+  role             role      @relation(fields: [roleId], references: [id], onUpdate: Restrict, map: "User_roleId_fkey")
 
   @@index([roleId], map: "roleId")
 }

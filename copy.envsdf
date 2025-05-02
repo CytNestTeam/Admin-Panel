@@ -17,7 +17,7 @@ SMTP_FROM="Your App Name <you@example.com>"
 SMTP_USER=your-smtp-email@gmail.com
 SMTP_PASS=your-smtp-password
 APP_URL=http://localhost:3000
-JWT_SECRET=your-jwt-secret-key
+# JWT_SECRET=your-jwt-secret-key
 # DATABASE_URL=your-database-url
 
 

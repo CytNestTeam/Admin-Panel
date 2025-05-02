@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 export default function ResetPasswordPage() {
-  const { token } = useParams();
+const params = useParams();
+const token = params.token;
+console.log(token);
+//   const { token } = useParams();
   const router = useRouter();
 
   const [password, setPassword] = useState('');
@@ -18,7 +21,6 @@ export default function ResetPasswordPage() {
       setMessage('Passwords do not match');
       return;
     }
-
     const res = await fetch('/api/auth/reset-password', {
       method: 'POST',
       body: JSON.stringify({ token, password }),
