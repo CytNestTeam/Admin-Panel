@@ -34,12 +34,15 @@ model user {
 model permission {
   id             Int              @id @default(autoincrement())
   name           String           @unique(map: "name") @db.VarChar(100)
+  api_id         Int?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime?
+  page_apis      page_apis?       @relation(fields: [api_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "apis_id")
   rolepermission rolepermission[]
   userpermission userpermission[]
 
   @@index([name], map: "idx_permission_name")
+  @@index([api_id], map: "idx_permissions_api_id")
 }
 
 model rolepermission {
@@ -54,6 +57,7 @@ model rolepermission {
   @@unique([roleId, permissionId], map: "unique_role_permission")
   @@index([roleId], map: "idx_role_permission_roleId")
   @@index([permissionId], map: "permissionId")
+  @@index([id, roleId, permissionId, createdAt, updatedAt], map: "id")
 }
 
 model userpermission {
@@ -68,4 +72,88 @@ model userpermission {
   @@unique([userId, permissionId], map: "unique_user_permission")
   @@index([userId], map: "idx_user_permission_userId")
   @@index([permissionId], map: "permissionId")
+}
+
+model menus {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  type       String    @db.VarChar(100)
+  project_id Int
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  created_by Int
+  updated_at DateTime? @db.DateTime(0)
+  updated_by Int?
+  deleted_at DateTime? @db.DateTime(0)
+  deleted_by Int?
+  projects   projects  @relation(fields: [project_id], references: [id], onUpdate: Restrict, map: "menus_ibfk_1")
+  pages      pages[]
+
+  @@index([project_id], map: "idx_project_id")
+}
+
+model page_apis {
+  id         Int              @id @default(autoincrement())
+  action     page_apis_action
+  path       String           @db.VarChar(255)
+  page_id    Int
+  created_at DateTime?        @default(now()) @db.DateTime(0)
+  created_by Int?
+  updated_at DateTime?        @db.DateTime(0)
+  updated_by Int?
+  deleted_at DateTime?        @db.DateTime(0)
+  deleted_by Int?
+  pages      pages            @relation(fields: [page_id], references: [id], onUpdate: Restrict, map: "page_apis_ibfk_1")
+  permission permission[]
+
+  @@index([page_id], map: "idx_page_id")
+}
+
+model page_forms {
+  id         Int       @id @default(autoincrement())
+  page_id    Int       @unique(map: "page_id")
+  fields     String    @db.LongText
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  created_by Int?
+  updated_at DateTime? @db.DateTime(0)
+  updated_by Int?
+  deleted_at DateTime? @db.DateTime(0)
+  deleted_by Int?
+  pages      pages     @relation(fields: [page_id], references: [id], onUpdate: Restrict, map: "page_forms_ibfk_1")
+}
+
+model pages {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(255)
+  route      String      @db.VarChar(255)
+  menu_id    Int
+  created_at DateTime?   @default(now()) @db.DateTime(0)
+  created_by Int?
+  updated_at DateTime?   @db.DateTime(0)
+  updated_by Int?
+  deleted_at DateTime?   @db.DateTime(0)
+  deleted_by Int?
+  page_apis  page_apis[]
+  page_forms page_forms?
+  menus      menus       @relation(fields: [menu_id], references: [id], onUpdate: Restrict, map: "pages_ibfk_1")
+
+  @@index([menu_id], map: "idx_menu_id")
+}
+
+model projects {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique(map: "name") @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  created_by Int
+  updated_at DateTime? @db.DateTime(0)
+  updated_by Int?
+  deleted_at DateTime? @db.DateTime(0)
+  deleted_by Int?
+  menus      menus[]
+}
+
+enum page_apis_action {
+  view
+  create
+  edit
+  delete
 }
