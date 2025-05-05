@@ -8,23 +8,64 @@ datasource db {
 }
 
 model role {
-  id        Int       @id @default(autoincrement())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  user      user[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?
+  rolepermission rolepermission[]
+  user           user[]
 }
 
 model user {
-  id               Int       @id @default(autoincrement())
-  email            String    @unique(map: "email")
+  id               Int              @id @default(autoincrement())
+  email            String           @unique(map: "email")
   password         String
-  roleId           Int       @default(2)
-  createdAt        DateTime  @default(now())
+  roleId           Int              @default(2)
+  resetToken       String?          @db.VarChar(255)
+  resetTokenExpiry DateTime?        @db.DateTime(0)
+  createdAt        DateTime         @default(now())
   updatedAt        DateTime?
-  resetToken       String?   @db.VarChar(255)
-  resetTokenExpiry DateTime? @db.DateTime(0)
-  role             role      @relation(fields: [roleId], references: [id], onUpdate: Restrict, map: "User_roleId_fkey")
+  role             role             @relation(fields: [roleId], references: [id], onUpdate: Restrict, map: "User_roleId_fkey")
+  userpermission   userpermission[]
 
   @@index([roleId], map: "roleId")
+}
+
+model permission {
+  id             Int              @id @default(autoincrement())
+  name           String           @unique(map: "name") @db.VarChar(100)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?
+  rolepermission rolepermission[]
+  userpermission userpermission[]
+
+  @@index([name], map: "idx_permission_name")
+}
+
+model rolepermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  createdAt    DateTime?  @default(now()) @db.DateTime(0)
+  updatedAt    DateTime?  @db.DateTime(0)
+  role         role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "rolepermission_ibfk_1")
+  permission   permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "rolepermission_ibfk_2")
+
+  @@unique([roleId, permissionId], map: "unique_role_permission")
+  @@index([roleId], map: "idx_role_permission_roleId")
+  @@index([permissionId], map: "permissionId")
+}
+
+model userpermission {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  permissionId Int
+  createdAt    DateTime?  @default(now()) @db.DateTime(0)
+  updatedAt    DateTime?  @db.DateTime(0)
+  user         user       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "userpermission_ibfk_1")
+  permission   permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "userpermission_ibfk_2")
+
+  @@unique([userId, permissionId], map: "unique_user_permission")
+  @@index([userId], map: "idx_user_permission_userId")
+  @@index([permissionId], map: "permissionId")
 }
