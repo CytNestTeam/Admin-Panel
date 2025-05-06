@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2025 at 02:36 PM
+-- Generation Time: May 06, 2025 at 01:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,8 +72,8 @@ CREATE TABLE `pages` (
 --
 
 INSERT INTO `pages` (`id`, `name`, `route`, `menu_id`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) VALUES
-(1, 'User List', '/users', 2, '2025-05-05 16:14:25', 1, NULL, NULL, NULL, NULL),
-(2, 'Roles', '/roles', 2, '2025-05-05 16:14:25', 1, NULL, NULL, NULL, NULL);
+(1, 'User List', '/users', 1, '2025-05-05 16:14:25', 1, NULL, NULL, NULL, NULL),
+(2, 'Roles', '/roles', 1, '2025-05-05 16:14:25', 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -245,7 +245,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `email`, `password`, `roleId`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
 (1, 'arevee0001@gmail.com', '$2b$10$8m1URnzWaBfwuXYEGHVMfOrEi2fh5mvxCQgpceZjvUrWdk3STRsg6', 1, NULL, NULL, '2025-05-01 09:47:58.641', '2025-05-02 16:13:51.183'),
-(2, 'cytnest@gmail.com', '$2b$10$W4AEqw4/OcYorZbKsHV41.IXn5TSl4.KbKcgVvmkSTfiASRzvCVCO', 2, '56da193b-5e0d-4b96-bba8-f92b9e9fbd77', '2025-05-02 07:16:18', '2025-05-01 10:17:10.342', '2025-05-02 11:46:18.859');
+(2, 'cytnest@gmail.com', '$2b$10$W4AEqw4/OcYorZbKsHV41.IXn5TSl4.KbKcgVvmkSTfiASRzvCVCO', 1, '56da193b-5e0d-4b96-bba8-f92b9e9fbd77', '2025-05-02 07:16:18', '2025-05-01 10:17:10.342', '2025-05-06 14:26:48.755');
 
 -- --------------------------------------------------------
 
@@ -267,8 +267,8 @@ CREATE TABLE `userpermission` (
 
 INSERT INTO `userpermission` (`id`, `userId`, `permissionId`, `createdAt`, `updatedAt`) VALUES
 (1, 1, 1, '2025-05-05 12:20:16', NULL),
-(2, 2, 4, '2025-05-05 16:33:45', NULL),
-(3, 2, 8, '2025-05-05 16:33:45', NULL);
+(2, 1, 4, '2025-05-05 16:33:45', '2025-05-06 14:28:13'),
+(3, 1, 8, '2025-05-05 16:33:45', '2025-05-06 14:28:17');
 
 --
 -- Indexes for dumped tables
