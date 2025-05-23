@@ -1,9 +1,12 @@
 // File: src/app/login/page.js
 "use client";
 
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import styles from "../ui/login/login.module.css";
+import stylesForm from "../ui/login/loginForm/loginForm.module.css";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -32,7 +35,7 @@ export default function LoginPage() {
 
       const userRole = session?.user?.role || "";
       if (userRole === "admin") {
-        router.push("/admin");
+        router.push("/dashboard");
       } else {
         router.push("/dashboard");
       }
@@ -42,15 +45,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded shadow mt-10">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <p className="text-red-600">{error}</p>}
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit} className={stylesForm.form}>
+        <h2>Login</h2>
+        {error && <p className="error">{error}</p>}
         <input
           type="email"
           name="email"
           placeholder="Email"
-          className="w-full border px-3 py-2 rounded"
           value={formData.email}
           onChange={handleChange}
           required
@@ -59,7 +61,6 @@ export default function LoginPage() {
           type="password"
           name="password"
           placeholder="Password"
-          className="w-full border px-3 py-2 rounded"
           value={formData.password}
           onChange={handleChange}
           required

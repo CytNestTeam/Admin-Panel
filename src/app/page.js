@@ -1,20 +1,25 @@
-"use client"
-
-import {usePermissions} from "@/context/PermissionsContext";
-import Link from 'next/link';
-export default function Home() {
-  const { permissions, loading } = usePermissions();
-
-
+const Homepage = () => {
   return (
-    <div>
-      {permissions.includes("view_dashboard") && <div>Dashboard Content</div>}
-      {!permissions.includes("view_dashboard") && <div>Access Denied</div>}
-      <Link href="/roles">Role</Link>
-     
-    </div>
-  );
+    <div>Homepage</div>
+  )
 }
+
+export default Homepage
+
+// "use client"
+
+// import {usePermissions} from "@/context/PermissionsContext";
+// import Link from 'next/link';
+// export default function Home() {
+//   const { permissions, loading } = usePermissions();
+
+
+//   return (
+//     <div>
+     
+//     </div>
+//   );
+// }
 
 
 
@@ -25,3 +30,9 @@ export default function Home() {
 // view_roles 
 // edit_roles
 // access_admin
+
+
+
+{/* {permissions.includes("view_dashboard") && <div>Dashboard Content</div>}
+{!permissions.includes("view_dashboard") && <div>Access Denied</div>}
+<Link href="/roles">Role</Link> */}
