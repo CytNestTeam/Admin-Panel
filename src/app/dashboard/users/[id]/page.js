@@ -10,8 +10,42 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 const SingleUserPage = async ({ params }) => {
   const searchParams = useSearchParams();
+  const [roles, setRoles] = useState([]);
   const id = searchParams.get("id") ?? "";
   const user = await fetchUser(id);
+
+
+  useEffect(() => {
+    async function fetchRoles() {
+      const res = await fetch("/api/roles");
+      const data = await res.json();
+      setRoles(data.roles || []);
+    }
+    fetchRoles();
+  }, []);
+  
+  useEffect(() => {
+    async function fetchUsers() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q, page }),
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        setUsers(data.users);
+        setCount(data.count);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsers();
+  }, []);
 
   return (
     <div className={styles.container}>
