@@ -34,8 +34,8 @@ const Dashboard = () => {
           {cards.map((item) => (
             <Card item={item} key={item.id} />
           ))}
-        </div>
-       <Transactions />
+        </div>hellohello 
+       <Transactions /> this 9is 
          <Chart />
       </div>
       <div className={styles.side}>
