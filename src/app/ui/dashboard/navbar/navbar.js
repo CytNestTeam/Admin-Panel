@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import styles from "./navbar.module.css";
+import Search from "@/app/ui/dashboard/search/search";
 import {
   MdNotifications,
   MdOutlineChat,
@@ -15,10 +16,11 @@ const Navbar = () => {
     <div className={styles.container}>
       <div className={styles.title}>{pathname.split("/").pop()}</div>
       <div className={styles.menu}>
-        <div className={styles.search}>
+          <Search placeholder="Search for a user..." />
+        {/* <div className={styles.search}>
           <MdSearch />
           <input type="text" placeholder="Search..." className={styles.input} />
-        </div>
+        </div> */}
         <div className={styles.icons}>
           <MdOutlineChat size={20} />
           <MdNotifications size={20} />

@@ -1,16 +1,56 @@
-import { deleteUser } from "@/app/lib/actions";
-import { fetchUsers } from "@/app/lib/data";
+"use client";
+import { useState, useEffect } from "react";
+
+// import { deleteUser } from "@/app/lib/actions";
+import { fetchUsers } from "@/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
 
-const UsersPage = async ({ searchParams }) => {
-  const q = searchParams?.q || "";
-  const page = searchParams?.page || 1;
-  const { count, users } = await fetchUsers(q, page);
+import { useSearchParams } from "next/navigation";
 
+const UsersPage = () => {
+  const searchParams = useSearchParams();
+  const initialQ = searchParams.get("q") ?? "";
+  const initialPage = parseInt(searchParams.get("page") ?? "1", 10);
+
+  const [q, setQ] = useState(initialQ);
+  const [page, setPage] = useState(initialPage);
+  const [users, setUsers] = useState([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setQ(searchParams.get("q") ?? "");
+    setPage(parseInt(searchParams.get("page") ?? "1", 10));
+  }, [searchParams]);
+  useEffect(() => {
+    async function fetchUsers() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q, page }),
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        setUsers(data.users);
+        setCount(data.count);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsers();
+  }, [q, page]);
+
+  // example handlers for pagination
+  const nextPage = () => setPage((p) => p + 1);
+  const prevPage = () => setPage((p) => Math.max(1, p - 1));
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -56,12 +96,12 @@ const UsersPage = async ({ searchParams }) => {
                       View
                     </button>
                   </Link>
-                  <form action={deleteUser}>
+                  {/* <form action={deleteUser}>
                     <input type="hidden" name="id" value={(user.id)} />
                     <button className={`${styles.button} ${styles.delete}`}>
                       Delete
                     </button>
-                  </form>
+                  </form> */}
                 </div>
               </td>
             </tr>

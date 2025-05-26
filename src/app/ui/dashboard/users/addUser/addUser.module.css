@@ -29,9 +29,14 @@
 .form textarea{
   width: 100%;
 }
-
-.form button{
+.form  div {
   width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  
+}
+.form div button{
+  /* width: 100%; */
   padding: 30px;
   background-color: teal;
   color: var(--text);
